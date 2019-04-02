@@ -12,8 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MCU_NAME       = 328
-TARGET         = mcp4251
-PACKAGES       = avrlib avrlib/devices mcp4251
-LOCK           = 2f
+TARGET         = spi_blinker
+PACKAGES       = avrlib spi_blinker
 
 include avrlib/makefile.mk

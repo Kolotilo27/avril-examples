@@ -13,24 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "avrlib/devices/mcp492x.h"
-#include "avrlib/gpio.h"
 #include "avrlib/boot.h"
+#include "avrlib/gpio.h"
+#include "avrlib/spi.h"
 
 using namespace avrlib;
 
-SpiMaster<NumberedGpio<10>, MSB_FIRST, 2> pot_interface;
+SpiMaster<NumberedGpio<10>, MSB_FIRST, 16> spi_interface;
 
-volatile uint16_t ramp;
 int main(void) {
   Boot(false);
-  pot_interface.Init();
-  uint8_t a = 0;
-  uint8_t b = 0;
+  
+  spi_interface.Init();
+  uint8_t counter = 0;
+  uint8_t sequence[] = { 1, 2, 3, 2, 1, 2, 1, 2 };
+
   while (1) {
-    pot_interface.WriteWord(0x00, a);
-    pot_interface.WriteWord(0x10, b >= 128 ? (255 - (b << 1)) : (b << 1));
-    ++a;
-    ++b;
+    spi_interface.Write(sequence[counter++ & 0x7]);
+    ConstantDelay(200);
+    spi_interface.Write(0x00);
+    ConstantDelay(200);
   }
 }
